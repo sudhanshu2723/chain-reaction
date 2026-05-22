@@ -62,6 +62,7 @@ document.getElementById('joinGameBtn').addEventListener('click', () => {
     return;
   }
   
+  console.log('Attempting to join game:', gameId, 'as', playerName);
   socket.emit('joinGame', { gameId, playerName });
 });
 
@@ -93,7 +94,18 @@ socket.on('gameCreated', ({ gameId, gameState: state }) => {
   showScreen('lobby');
 });
 
+socket.on('joinedGame', ({ gameId, gameState: state }) => {
+  console.log('Successfully joined game:', gameId);
+  gameState.gameId = gameId;
+  gameState.myPlayerId = socket.id;
+  updateGameState(state);
+  document.getElementById('displayGameId').textContent = gameId;
+  showScreen('lobby');
+  updateLobby();
+});
+
 socket.on('playerJoined', (state) => {
+  console.log('Player joined event received', state);
   updateGameState(state);
   updateLobby();
 });

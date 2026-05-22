@@ -17,7 +17,9 @@ class Game {
     this.gameId = gameId;
     this.players = [];
     this.currentPlayerIndex = 0;
-    this.grid = Array(8).fill(null).map(() => Array(6).fill({ orbs: 0, player: null }));
+    this.grid = Array(8).fill(null).map(() => 
+      Array(6).fill(null).map(() => ({ orbs: 0, player: null }))
+    );
     this.gridSize = { rows: 8, cols: 6 };
     this.started = false;
     this.winner = null;
@@ -209,23 +211,34 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinGame', ({ gameId, playerName }) => {
+    console.log(`Join attempt - Game ID: ${gameId}, Player: ${playerName}`);
+    console.log(`Available games:`, Array.from(games.keys()));
+    
     const game = games.get(gameId);
     
     if (!game) {
+      console.log(`Game ${gameId} not found`);
       socket.emit('error', 'Game not found');
       return;
     }
 
     if (game.started) {
+      console.log(`Game ${gameId} already started`);
       socket.emit('error', 'Game already started');
       return;
     }
 
     if (game.addPlayer(socket.id, playerName)) {
       socket.join(gameId);
+      
+      // Send confirmation to the joining player
+      socket.emit('joinedGame', { gameId, gameState: game.getState() });
+      
+      // Notify all players in the game
       io.to(gameId).emit('playerJoined', game.getState());
-      console.log(`${playerName} joined game ${gameId}`);
+      console.log(`${playerName} joined game ${gameId}. Total players: ${game.players.length}`);
     } else {
+      console.log(`Game ${gameId} is full`);
       socket.emit('error', 'Game is full');
     }
   });
