@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chain Reaction - Multiplayer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Menu Screen -->
+    <div id="menu" class="screen active">
+      <h1>⚛️ Chain Reaction</h1>
+      <div class="menu-content">
+        <input type="text" id="playerName" placeholder="Enter your name" maxlength="15">
+        <button id="createGameBtn" class="btn btn-primary">Create New Game</button>
+        <div class="divider">OR</div>
+        <input type="text" id="gameIdInput" placeholder="Enter Game ID" maxlength="10">
+        <button id="joinGameBtn" class="btn btn-secondary">Join Game</button>
+      </div>
+    </div>
+
+    <!-- Lobby Screen -->
+    <div id="lobby" class="screen">
+      <h1>⚛️ Chain Reaction</h1>
+      <div class="lobby-content">
+        <div class="game-id-display">
+          <span>Game ID:</span>
+          <span id="displayGameId" class="game-id"></span>
+          <button id="copyGameId" class="btn-small">Copy</button>
+        </div>
+        <h2>Players</h2>
+        <div id="playersList"></div>
+        <p class="info">Waiting for players... (2-4 players needed)</p>
+        <button id="startGameBtn" class="btn btn-primary" disabled>Start Game</button>
+        <button id="leaveLobbyBtn" class="btn btn-secondary">Leave</button>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game" class="screen">
+      <div class="game-header">
+        <div class="game-info">
+          <span id="currentTurn"></span>
+          <span id="gameIdTop"></span>
+        </div>
+        <button id="leaveGameBtn" class="btn-small">Leave Game</button>
+      </div>
+      <div id="playersInfo"></div>
+      <canvas id="gameCanvas"></canvas>
+      <div id="message" class="message"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
